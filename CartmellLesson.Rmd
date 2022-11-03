@@ -2,7 +2,8 @@
 title: PCA with R
 author: Laci Cartmell
 date: 10/31/2022
-output: html_document
+output:
+    html_document: default
 ---
 
 ```{r setup, include=FALSE}

@@ -11,7 +11,7 @@
 
 <meta name="author" content="Laci Cartmell" />
 
-<meta name="date" content="2022-10-31" />
+<meta name="date" content="2022-11-02" />
 
 <title>PCA with R</title>
 
@@ -171,28 +171,36 @@ pre code {
 
 <h1 class="title toc-ignore">PCA with R</h1>
 <h4 class="author">Laci Cartmell</h4>
-<h4 class="date">10/31/2022</h4>
+<h4 class="date">11/02/2022</h4>
 
 </div>
 
 
 <div id="understanding-pca" class="section level2">
 <h2>Understanding PCA</h2>
-<p>Interactions between variables are often hidden especially w/complex and/or large datasets.</p>
+<p>Interactions between variables are often hidden especially w/complex and/or large datasets. PCAs are often used to visualize large datasets because they reduce complexity while retaining important information.</p>
 <p>How do 10 variables interact with each other variable? We could make 45 pairwise scatterplots, but looking at them would be time consuming - or we could use PCA to find explore those interactions for us.</p>
-<p>PCAs are often used to visualize large datasets because they reduce complexity while retaining important information.</p>
-<p>So, what exactly is PCA?</p>
+</div>
+<div id="section" class="section level1">
+<h1></h1>
+<div id="so-what-exactly-is-pca" class="section level4">
+<h4>So, what exactly is PCA?</h4>
 <p>Principal Components Analysis (PCA) is a statistical test that reduces dimensionality while preserving variance by linearly transforming data into new coordinate system with fewer dimensions than the initial data.</p>
 <p>PCA takes in data as a dataframe. Then, it is centered and scaled which is the basis of the new coordinate plane.</p>
 <p>The transformation fits data into a coordinate system with the most variance is in the first coordinate (component), the 2nd most variance in the second coordinate, and so on.</p>
 <p>Each principal component is now a summary of the variables from original data. Principal components are linear combinations of the original predictors.</p>
 <p>Because of the orthogonal transformation the data undergoes, numerical data works the best. You could code categorical as continuous but better to use categorical variables later on for grouping (plus pretty colors)</p>
-<p>PCA does multiple things at once:</p>
+</div>
+</div>
+<div id="section-1" class="section level1">
+<h1></h1>
+<div id="pca-does-multiple-things-at-once" class="section level4">
+<h4>PCA does multiple things at once:</h4>
 <ul>
 <li>Exploratory analysis
 <ul>
 <li>Variable reduction - we find the total variance in the original dataset explained by each principal component</li>
-<li>do our categorical variables group?</li>
+<li>do our categorical variables group? #</li>
 </ul></li>
 <li>Model selection
 <ul>
@@ -296,6 +304,7 @@ for (k in 1:nrow(loads)) {
             opacity = 1) 
 }
 print(p)</code></pre>
+</div>
 </div>
 
 

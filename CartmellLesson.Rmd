@@ -1,7 +1,7 @@
 ---
 title: PCA with R
 author: Laci Cartmell
-date: 10/31/2022
+date: 11/02/2022
 output:
     html_document: default
 ---
@@ -13,13 +13,12 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Understanding PCA
 
-Interactions between variables are often hidden especially w/complex and/or large datasets. 
+Interactions between variables are often hidden especially w/complex and/or large datasets. PCAs are often used to visualize large datasets because they reduce complexity while retaining important information. 
 
 How do 10 variables interact with each other variable? We could make 45 pairwise scatterplots, but looking at them would be time consuming - or we could use PCA to find explore those interactions for us. 
 
-PCAs are often used to visualize large datasets because they reduce complexity while retaining important information. 
-
-So, what exactly is PCA?
+#
+#### So, what exactly is PCA?
 
 Principal Components Analysis (PCA) is a statistical test that reduces dimensionality while preserving variance by linearly transforming data into new coordinate system with fewer dimensions than the initial data.
 
@@ -31,12 +30,13 @@ Each principal component is now a summary of the variables from original data. P
 
 Because of the orthogonal transformation the data undergoes, numerical data works the best. You could code categorical as continuous but better to use categorical variables later on for grouping (plus pretty colors)
 
-
-PCA does multiple things at once: 
+# 
+#### PCA does multiple things at once: 
 
 - Exploratory analysis 
     - Variable reduction - we find the total variance in the original dataset explained by each principal component
     -  do our categorical variables group?
+# 
 
 - Model selection
   -  variable reduction

@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 Interactions between variables are often hidden especially w/complex and/or large datasets. PCAs are often used to visualize large datasets because they reduce complexity while retaining important information. 
 
-How do 10 variables interact with each other variable? We could make 45 pairwise scatterplots, but looking at them would be time consuming - or we could use PCA to find explore those interactions for us. 
+How do 10 variables interact with each other variable? We could make 45 pairwise scatter plots, but looking at them would be time consuming - or we could use PCA to find explore those interactions for us. 
 
 #
 #### So, what exactly is PCA?

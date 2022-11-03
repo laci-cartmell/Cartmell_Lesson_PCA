@@ -1,7 +1,7 @@
 ---
 title: PCA with R
 author: Laci Cartmell
-date: 10/31/2022
+date: 11/02/2022
 output:
     html_document: default
 ---
@@ -13,13 +13,12 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Understanding PCA
 
-Interactions between variables are often hidden especially w/complex and/or large datasets. 
+Interactions between variables are often hidden especially w/complex and/or large datasets. PCAs are often used to visualize large datasets because they reduce complexity while retaining important information. 
 
 How do 10 variables interact with each other variable? We could make 45 pairwise scatterplots, but looking at them would be time consuming - or we could use PCA to find explore those interactions for us. 
 
-PCAs are often used to visualize large datasets because they reduce complexity while retaining important information. 
-
-So, what exactly is PCA?
+#
+#### So, what exactly is PCA?
 
 Principal Components Analysis (PCA) is a statistical test that reduces dimensionality while preserving variance by linearly transforming data into new coordinate system with fewer dimensions than the initial data.
 
@@ -31,12 +30,13 @@ Each principal component is now a summary of the variables from original data. P
 
 Because of the orthogonal transformation the data undergoes, numerical data works the best. You could code categorical as continuous but better to use categorical variables later on for grouping (plus pretty colors)
 
-
-PCA does multiple things at once: 
+# 
+#### PCA does multiple things at once: 
 
 - Exploratory analysis 
     - Variable reduction - we find the total variance in the original dataset explained by each principal component
     -  do our categorical variables group?
+# 
 
 - Model selection
   -  variable reduction
@@ -49,7 +49,9 @@ The goal of the PCA is to explain the most variability with fewer variables than
 
 ```
 
-#install.packages("ggfortify", "devtools", "remotes") 
+install.packages("ggfortify")
+install.packages("devtools")
+install.packages("remotes") 
 
 # Iris dataset - 3 species, 50 samples each
 str(iris)
@@ -59,7 +61,7 @@ summary(iris)
 iris$Species <- factor(iris$Species,
                        levels = c("versicolor", "virginica",
                                   "setosa"))
-describe(iris, TRUE)
+summary(Iris_pca)   # Remove species
 
 # remove categorical variable
 Iris_pca <- subset(iris, select = -c(Species))
@@ -88,12 +90,10 @@ iris_pca_plot
 
 # screeplot - how many components to keep
 plot_iris_pca <- plot(Iris_pca, type="lines")
-plot_iris_pca 
 
 
 # biplot - how components were combined in 2-d
-biplot_iris_pca <- biplot(iris.pca)
-biplot_iris_pca
+biplot_iris_pca <- biplot(Iris_pca)
 
 ```
 
@@ -102,51 +102,36 @@ biplot_iris_pca
 The screeplot is also used to decide if our data fits a PCA. Sometimes, a PCA won't explain enough variance from only 2 components to be incredibly helpful. 
 
 
-```
 
+https://planspacedotorg.wordpress.com/2013/02/03/pca-3d-visualization-and-clustering-in-r/
+February 3, 2013 by aaronschumacher
+```
+#####
+
+Iris_pca <- prcomp(iris[,1:4],
+                   center = TRUE,   # mean of 0
+                   scale. = TRUE,   # STD of 1 
+                   cor=TRUE,
+                   scores=TRUE)
 
 library(rgl)
 
-#interactive plot
-plot3d(Iris_pca$scores[,1:3], col=iris$Species)
+
+plot3d(Iris_pca$scores[,1:3])
+text3d(pc$scores[,1:3],texts=rownames(iris))
+text3d(pc$loadings[,1:3], texts=rownames(pc$loadings), col="red")
+coords <- NULL
+for (i in 1:nrow(pc$loadings)) {
+  coords <- rbind(coords, rbind(c(0,0,0),pc$loadings[i,1:3]))
+}
 
 # not great tools for 3d in R, but we can look at the 3 pcs with most variance
 
-# scores
-iris_pca_scores <- Iris_pca$scores
-x <- scores[,1]   #pc  1
-y <- scores[,2]   #pc  2
-z <- scores[,3]   #pc  3
+set.seed(42)
+cl <- kmeans(iris[,1:4],3)
+iris$cluster <- as.factor(cl$cluster)
 
-# load scores
-loads <- pca$loadings
+plot3d(pc$scores[,1:3], col=iris$cluster, main="k-means clusters")
+plot3d(pc$scores[,1:3], col=iris$Species, main="actual species")
 
-# Scale factor for loadings
-scale.loads <- 5
-
-# 3D plot
-library(plotly)
-p <- plot_ly() %>%
-  add_trace(x=x, y=y, z=z,
-            type="scatter3d", mode="markers",
-            marker = list(color=y, 
-               colorscale = c("#FFE1A1", "#683531"), 
-               opacity = 0.7)) 
-
-for (k in 1:nrow(loads)) {
-   x <- c(0, loads[k,1])*scale.loads
-   y <- c(0, loads[k,2])*scale.loads
-   z <- c(0, loads[k,3])*scale.loads
-   p <- p %>% add_trace(x=x, y=y, z=z,
-            type="scatter3d", mode="lines",
-            line = list(width=8),
-            opacity = 1) 
-}
-print(p)
-```
-
-
-
-
-
-
+with(iris, table(cluster, Species))

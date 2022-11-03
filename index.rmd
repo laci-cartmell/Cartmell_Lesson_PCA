@@ -80,6 +80,7 @@ str(Iris_pca)
 #Plotting a PCA - checks for linearity and normality
 library(ggfortify)
 
+
 #plots PC1,PC2 automatically
 iris_pca_plot <- autoplot(Iris_pca,
                           data = iris,

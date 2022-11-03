@@ -214,7 +214,9 @@ pre code {
 <div id="pca-in-r" class="section level2">
 <h2>PCA in R</h2>
 <pre><code>
-#install.packages(&quot;ggfortify&quot;, &quot;devtools&quot;, &quot;remotes&quot;) 
+install.packages(&quot;ggfortify&quot;)
+install.packages(&quot;devtools&quot;)
+install.packages(&quot;remotes&quot;) 
 
 # Iris dataset - 3 species, 50 samples each
 str(iris)
@@ -224,7 +226,7 @@ summary(iris)
 iris$Species &lt;- factor(iris$Species,
                        levels = c(&quot;versicolor&quot;, &quot;virginica&quot;,
                                   &quot;setosa&quot;))
-describe(iris, TRUE)
+summary(Iris_pca)   # Remove species
 
 # remove categorical variable
 Iris_pca &lt;- subset(iris, select = -c(Species))
@@ -253,57 +255,46 @@ iris_pca_plot
 
 # screeplot - how many components to keep
 plot_iris_pca &lt;- plot(Iris_pca, type=&quot;lines&quot;)
-plot_iris_pca 
 
 
 # biplot - how components were combined in 2-d
-biplot_iris_pca &lt;- biplot(iris.pca)
-biplot_iris_pca
+biplot_iris_pca &lt;- biplot(Iris_pca)
 </code></pre>
 </div>
 <div id="pca-in-3-dimensions" class="section level2">
 <h2>PCA in 3-dimensions</h2>
 <p>The screeplot is also used to decide if our data fits a PCA. Sometimes, a PCA won’t explain enough variance from only 2 components to be incredibly helpful.</p>
-<pre><code>
+<pre><code>#####
+
+Iris_pca &lt;- prcomp(iris[,1:4],
+                   center = TRUE,   # mean of 0
+                   scale. = TRUE,   # STD of 1 
+                   cor=TRUE,
+                   scores=TRUE)
 
 library(rgl)
 
-#interactive plot
-plot3d(Iris_pca$scores[,1:3], col=iris$Species)
+
+plot3d(Iris_pca$scores[,1:3])
+text3d(pc$scores[,1:3],texts=rownames(iris))
+text3d(pc$loadings[,1:3], texts=rownames(pc$loadings), col=&quot;red&quot;)
+coords &lt;- NULL
+for (i in 1:nrow(pc$loadings)) {
+  coords &lt;- rbind(coords, rbind(c(0,0,0),pc$loadings[i,1:3]))
+}
 
 # not great tools for 3d in R, but we can look at the 3 pcs with most variance
 
-# scores
-iris_pca_scores &lt;- Iris_pca$scores
-x &lt;- scores[,1]   #pc  1
-y &lt;- scores[,2]   #pc  2
-z &lt;- scores[,3]   #pc  3
+set.seed(42)
+cl &lt;- kmeans(iris[,1:4],3)
+iris$cluster &lt;- as.factor(cl$cluster)
 
-# load scores
-loads &lt;- pca$loadings
+plot3d(pc$scores[,1:3], col=iris$cluster, main=&quot;k-means clusters&quot;)
+plot3d(pc$scores[,1:3], col=iris$Species, main=&quot;actual species&quot;)
 
-# Scale factor for loadings
-scale.loads &lt;- 5
+with(iris, table(cluster, Species))
 
-# 3D plot
-library(plotly)
-p &lt;- plot_ly() %&gt;%
-  add_trace(x=x, y=y, z=z,
-            type=&quot;scatter3d&quot;, mode=&quot;markers&quot;,
-            marker = list(color=y, 
-               colorscale = c(&quot;#FFE1A1&quot;, &quot;#683531&quot;), 
-               opacity = 0.7)) 
-
-for (k in 1:nrow(loads)) {
-   x &lt;- c(0, loads[k,1])*scale.loads
-   y &lt;- c(0, loads[k,2])*scale.loads
-   z &lt;- c(0, loads[k,3])*scale.loads
-   p &lt;- p %&gt;% add_trace(x=x, y=y, z=z,
-            type=&quot;scatter3d&quot;, mode=&quot;lines&quot;,
-            line = list(width=8),
-            opacity = 1) 
-}
-print(p)</code></pre>
+</code></pre>
 </div>
 </div>
 

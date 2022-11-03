@@ -1,0 +1,151 @@
+---
+title: PCA with R
+author: Laci Cartmell
+date: 10/31/2022
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+## Understanding PCA
+
+Interactions between variables are often hidden especially w/complex and/or large datasets. 
+
+How do 10 variables interact with each other variable? We could make 45 pairwise scatterplots, but looking at them would be time consuming - or we could use PCA to find explore those interactions for us. 
+
+PCAs are often used to visualize large datasets because they reduce complexity while retaining important information. 
+
+So, what exactly is PCA?
+
+Principal Components Analysis (PCA) is a statistical test that reduces dimensionality while preserving variance by linearly transforming data into new coordinate system with fewer dimensions than the initial data.
+
+PCA takes in data as a dataframe. Then, it is centered and scaled which is the basis of the new coordinate plane.     
+ 
+The transformation fits data into a coordinate system with the most variance is in the first coordinate (component), the 2nd most variance in the second coordinate, and so on. 
+
+Each principal component is now a summary of the variables from original data. Principal components are linear combinations of the original predictors. 
+
+Because of the orthogonal transformation the data undergoes, numerical data works the best. You could code categorical as continuous but better to use categorical variables later on for grouping (plus pretty colors)
+
+
+PCA does multiple things at once: 
+
+- Exploratory analysis 
+    - Variable reduction - we find the total variance in the original dataset explained by each principal component
+    -  do our categorical variables group?
+
+- Model selection
+  -  variable reduction
+  -  reduce dimensionality - esp if vars are correlated
+  -  PCR - Principle Component Regression
+
+The goal of the PCA is to explain the most variability with fewer variables than we started with. If we can capture most of the variation in two dimensions, then we can project all the observations onto a scatterplot known as a biplot. However, if a majority of the variation isn't explained by the first two components, adding the 3rd pc may be necessary. But how does that change our PCA and the visualization of it?
+
+## PCA in R
+
+```
+
+#install.packages("ggfortify", "devtools", "remotes") 
+
+# Iris dataset - 3 species, 50 samples each
+str(iris)
+summary(iris)
+
+# Create factor var w/levels for species category
+iris$Species <- factor(iris$Species,
+                       levels = c("versicolor", "virginica",
+                                  "setosa"))
+describe(iris, TRUE)
+
+# remove categorical variable
+Iris_pca <- subset(iris, select = -c(Species))
+
+# Check correlation (usually done earlier)
+round(cor(iris[,1:4]), 2)
+
+# PCA
+Iris_pca <- prcomp(Iris_pca,
+                   center = TRUE,   # mean of 0
+                   scale. = TRUE)   # STD of 1
+summary(Iris_pca)
+str(Iris_pca)
+  
+
+#Plotting a PCA - checks for linearity and normality
+library(ggfortify)
+
+#plots PC1,PC2 automatically
+iris_pca_plot <- autoplot(Iris_pca,
+                          data = iris,
+                        #  colour = 'Species'
+                          )
+iris_pca_plot
+
+
+# screeplot - how many components to keep
+plot_iris_pca <- plot(Iris_pca, type="lines")
+plot_iris_pca 
+
+
+# biplot - how components were combined in 2-d
+biplot_iris_pca <- biplot(iris.pca)
+biplot_iris_pca
+
+```
+
+## PCA in 3-dimensions
+
+The screeplot is also used to decide if our data fits a PCA. Sometimes, a PCA won't explain enough variance from only 2 components to be incredibly helpful. 
+
+
+```
+
+
+library(rgl)
+
+#interactive plot
+plot3d(Iris_pca$scores[,1:3], col=iris$Species)
+
+# not great tools for 3d in R, but we can look at the 3 pcs with most variance
+
+# scores
+iris_pca_scores <- Iris_pca$scores
+x <- scores[,1]   #pc  1
+y <- scores[,2]   #pc  2
+z <- scores[,3]   #pc  3
+
+# load scores
+loads <- pca$loadings
+
+# Scale factor for loadings
+scale.loads <- 5
+
+# 3D plot
+library(plotly)
+p <- plot_ly() %>%
+  add_trace(x=x, y=y, z=z,
+            type="scatter3d", mode="markers",
+            marker = list(color=y, 
+               colorscale = c("#FFE1A1", "#683531"), 
+               opacity = 0.7)) 
+
+for (k in 1:nrow(loads)) {
+   x <- c(0, loads[k,1])*scale.loads
+   y <- c(0, loads[k,2])*scale.loads
+   z <- c(0, loads[k,3])*scale.loads
+   p <- p %>% add_trace(x=x, y=y, z=z,
+            type="scatter3d", mode="lines",
+            line = list(width=8),
+            opacity = 1) 
+}
+print(p)
+```
+
+
+
+
+
+

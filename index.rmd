@@ -96,6 +96,7 @@ biplot_iris_pca <- biplot(Iris_pca)
 
 
 ```
+### Review my research data script to demonstrate why need 3-dimensional plot
 
 ## PCA in 3-dimensions
 
@@ -109,11 +110,12 @@ February 3, 2013 by aaronschumacher
 
 
 ``` 
-
+#####
+## 3 DIMENSIONAL
 library(pca3d)
 
 pca3d(Iris_pca, group=group_species)
-pca3d(Iris_pca, components = 2:4, group=group_species)
+pca3d(Iris_pca, components = 1:3, group=group_species)
 
 #visualize with interactive plot
 snapshotPCA3d(file="first3pcs.png")
@@ -121,8 +123,9 @@ snapshotPCA3d(file="first3pcs.png")
 #create figure for saving
 pca2d(Iris_pca, group=group_species, legend="topright")
 
-#####
-## 3 DIMENSIONAL
+
+
+## Alternative method
 
 # Different pca set-up - princomp
 # correlation vs. covariance matrix
@@ -131,6 +134,7 @@ Iris_pca <- princomp(iris[,1:4],
                    scale. = TRUE,   # STD of 1 
                    cor=TRUE,
                    scores=TRUE)
+
 
 library(rgl)
 

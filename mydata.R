@@ -1,7 +1,7 @@
 
 
 ##################### 
-# my research data
+# Practice with my work research data
 #####################
 
 # read in data
@@ -34,22 +34,19 @@ all(is.na(datatable$Size))
 #Replace NaN & Inf with NA
 datatable[is.na(datatable) | datatable=="-Inf"] = NA
 
-# rank in r - ranking our df by H_P 
-df %>%
-  +   group_by(COLONYNAME) %>%
-  +   mutate(good_ranks = order(order(Hay_Pasture, decreasing=TRUE)))
-rank(datatable,ties.method = "first")
+summary(datatable)
 
 
 ##################
 #### PCA - Principal component analysis - 
 ##################
-data <- datatable[,c(18:28)]
+
+data <- datatable[,c(18:28)] # only continuous
 str(data)
 head(data)
 summary(data)
 
-data.pca <- prcomp(datatable[,c(16:26)], center = TRUE, scale. = TRUE)
+data.pca <- prcomp(datatable[,c(5:11)], center = TRUE, scale. = TRUE)
 summary(data.pca)
 #PC1 explains 22% of the total variance
 
@@ -60,20 +57,14 @@ str(data.pca)
 # loading library
 install.packages("ggfortify")
 library(ggfortify)
-data.pca.plot <- autoplot(data.pca,
-                          data = datatable,
-                          colour = 'Size')
-data.pca.plot2 <- autoplot(data.pca,
-                           data = datatable,
-                           colour = 'Substrate')
-data.pca.plot
+
+
 summary(datatable)
 biplot.data.pca <- biplot(data.pca)
 biplot.data.pca
 
 #how many components
-plot.data.pca <- plot(data.pca, type="1")
-plot.data.pca
+
 install.packages("devtools")
 library(devtools)
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
@@ -87,7 +78,36 @@ ggbiplot(data.pca)
 #label each point with year
 ggbiplot(data.pca, label = datatable$Year)
 
+data.pca.plot <- autoplot(data.pca,
+                          data = datatable,
+                          colour = 'Size')
 
-```
+data.pca.plot
+data.pca.plot2 <- autoplot(data.pca,
+                           data = datatable,
+                           colour = 'Substrate')
+data.pca.plot2
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+######################################################################
+
+#### 3-dimensions
+install.packages("ggfortify")
+install.packages("devtools")
+install.packages("remotes") 
+install.packages("rgl")
+install.packages("pca3d")
+
+library(pca3d)
+
+pca3d(data.pca)
+
+#create group of year
+pca3d(data.pca, components = 1:3, group=datatable$Year)
+
+#visualize with interactive plot
+snapshotPCA3d(file="first3pcs.png")
+
+#create figure for saving
+pca2d(Iris_pca, group=group_species, legend="topright")
+
+

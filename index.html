@@ -434,14 +434,15 @@ it?</p>
 install.packages(&quot;devtools&quot;)
 install.packages(&quot;remotes&quot;) 
 install.packages(&quot;rgl&quot;)
+install.packages(&quot;pca3d&quot;)
 # Iris dataset - 3 species, 50 samples each
 str(iris)
 summary(iris)
 
 # Create factor var w/levels for species category
-#iris$Species &lt;- factor(iris$Species,
- #                      levels = c(&quot;versicolor&quot;, &quot;virginica&quot;, &quot;setosa&quot;))
-
+group_species &lt;- factor(iris$Species,
+                       levels = c(&quot;versicolor&quot;, &quot;virginica&quot;, &quot;setosa&quot;))
+summary(group_species)
 
 # Check correlation (usually done earlier)
 round(cor(iris[,1:4]), 2)
@@ -485,7 +486,16 @@ be incredibly helpful.</p>
 <p><a href="https://planspacedotorg.wordpress.com/2013/02/03/pca-3d-visualization-and-clustering-in-r/" class="uri">https://planspacedotorg.wordpress.com/2013/02/03/pca-3d-visualization-and-clustering-in-r/</a>
 February 3, 2013 by aaronschumacher</p>
 <pre><code>
+library(pca3d)
 
+pca3d(Iris_pca, group=group_species)
+pca3d(Iris_pca, components = 2:4, group=group_species)
+
+#visualize with interactive plot
+snapshotPCA3d(file=&quot;first3pcs.png&quot;)
+
+#create figure for saving
+pca2d(Iris_pca, group=group_species, legend=&quot;topright&quot;)
 
 #####
 ## 3 DIMENSIONAL

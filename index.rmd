@@ -52,14 +52,15 @@ install.packages("ggfortify")
 install.packages("devtools")
 install.packages("remotes") 
 install.packages("rgl")
+install.packages("pca3d")
 # Iris dataset - 3 species, 50 samples each
 str(iris)
 summary(iris)
 
 # Create factor var w/levels for species category
-#iris$Species <- factor(iris$Species,
- #                      levels = c("versicolor", "virginica", "setosa"))
-
+group_species <- factor(iris$Species,
+                       levels = c("versicolor", "virginica", "setosa"))
+summary(group_species)
 
 # Check correlation (usually done earlier)
 round(cor(iris[,1:4]), 2)
@@ -109,7 +110,16 @@ February 3, 2013 by aaronschumacher
 
 ``` 
 
+library(pca3d)
 
+pca3d(Iris_pca, group=group_species)
+pca3d(Iris_pca, components = 2:4, group=group_species)
+
+#visualize with interactive plot
+snapshotPCA3d(file="first3pcs.png")
+
+#create figure for saving
+pca2d(Iris_pca, group=group_species, legend="topright")
 
 #####
 ## 3 DIMENSIONAL

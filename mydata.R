@@ -4,16 +4,16 @@
 # my research data
 #####################
 
+# read in data
 library(readxl)
-NLCD_Land_cover_gisanalysis <- read_excel("F:/nlcd_land_cover_l48_20210604/NLCD_Land_cover_gisanalysis.xlsx", sheet ="Sheet5")
-summary(NLCD_Land_cover_gisanalysis)
-datatable <- NLCD_Land_cover_gisanalysis
+Cartmell_NLCD_Rlesson <- read_excel("Cartmell_NLCD_Rlesson.xlsx")
+View(Cartmell_NLCD_Rlesson)
+datatable <- Cartmell_NLCD_Rlesson
+
 
 #list of colonynames
-library(readxl)
-colonynames <- read_excel("F:/nlcd_land_cover_l48_20210604/colonynames_analysis.xlsx", 
-                          sheet = "colonynames_analysis")
-View(colonynames)
+
+print(group_colony)
 
 #  SPECIFY SUBSTRATE/YEAR/COLONYNAME AS FACTOR VARS, INDICATE BASE FOR SUBSTRATE AND YEAR
 datatable$Substrate <- as.factor(datatable$Substrate)
@@ -24,11 +24,9 @@ datatable$Year <- as.factor(datatable$Year)
 
 datatable$COLONYNAME = factor(datatable$COLONYNAME,
                               levels = unique(datatable$COLONYNAME))
-summary(datatable)
-install.packages("writexl")
-require(writexl)
 
-write_xlsx(datatable, "C:\\MyLocation\\datatable2.xlsx")
+summary(datatable)
+
 
 #Check for NaN or Inf and replace with NA if present
 #is all a variable NA

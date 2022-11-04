@@ -10,7 +10,7 @@
 #   - Run a PCA using pcrcomp()
 #   - Create a screeplot and a biplot
 #   - Plot components of pcs with it colored by a categorical variable (Substrate, species, year)
-#   - Optional: Make a plot with 3 pricipal components and record the image
+#   - Make a plot with 3 principal components and record the image
 #   
 #   
 ## Included dataset:
@@ -47,12 +47,12 @@ install.packages("remotes")
 install.packages("rgl")
 install.packages("pca3d")
 install.packages("devtools")
+
 library(devtools)
 
 Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS="true")
 install.packages("remotes")
-remotes::install_github("vqv/ggbiplot")
-install_github("vqv/ggbiplot")
+install.packages("ggbiolot")
 
 
 ##################
@@ -116,9 +116,11 @@ summary(datatable)
 # run a pca
 data.pca <- prcomp(datatable[,c(5:11)], center = TRUE, scale. = TRUE) #5-11 columns
 summary(data.pca)
-#PC1 explains 22% of the total variance
-#PC2 - % of total varaince
-# PC1,2,3 make up % of the total variance
+#PC1 explains 37% of the total variance
+#PC2 - 18.4 % of total varaince
+
+# PC1,2,3 make up 70.9% % of the total variance
+# with pc4 --> up to 82.7% % of the total variance
 
 #look at PCA object
 str(data.pca)
@@ -130,55 +132,64 @@ data.pca
 # loading library
 library(ggfortify)
 
-# biplots!
+
+# screeplot - how many components to keep
+data.pca <- plot(data.pca, type="lines")
+
+# biplots! two different views
 
 biplot.data.pca <- biplot(data.pca)
-biplot.data.pca
-
-#how many components
-
-library(ggbiplot)
 
 ggbiplot(data.pca)
 
-#label each point with year
-ggbiplot(data.pca, label = datatable$Year)
 
-data.pca.plot <- autoplot(data.pca,
+##
+# Add color! --> make at least one of these plots, substrate shows clearest grouping
+#label with group year
+data.pca.year <- autoplot(data.pca,
+                          data = datatable,
+                          colour = 'Year')
+#label with group size category
+data.pca.size <- autoplot(data.pca,
                           data = datatable,
                           colour = 'catsize')
+#label with group present or absent category
+data.pca.presence <- autoplot(data.pca,
+                          data = datatable,
+                          colour = 'Presence')
 
-data.pca.plot
-data.pca.plot2 <- autoplot(data.pca,
+#label with group Substrate 
+data.pca.substrate <- autoplot(data.pca,
                            data = datatable,
                            colour = 'Substrate')
-data.pca.plot2
-
+#see the plots
+data.pca.year
+data.pca.size
+data.pca.presence
+data.pca.substrate
 
 ##################
 #### PCA - Principal component analysis  
 ##################
 
 # if not already, install
-install.packages("ggfortify")
-install.packages("devtools")
-install.packages("remotes") 
+
 install.packages("rgl")
 install.packages("pca3d")
 
 library(pca3d)
 
-#
+# create a 3d interactiable plot
 pca3d(data.pca)
-pca3d
 
-#create group of year
-pca3d(data.pca, components = 1:3, group=datatable$Year)
+#create group of substrate - or other group cat. variable
+pca3d(data.pca, components = 1:3, group=datatable$Substrate)
 
 #visualize with interactive plot
-snapshotPCA3d(file="first3pcs.png")
+snapshotPCA3d(file="first3pc_substrate.png")
 
-#create figure for saving
-pca2d(colony_pca, group=, legend="topright")
 
+####
+# and that's it! 
+####
 

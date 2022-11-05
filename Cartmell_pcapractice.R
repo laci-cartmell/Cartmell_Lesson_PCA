@@ -113,9 +113,15 @@ round(cor(datatable[,5:11]), 2) #nlcd data
 #remember our og
 summary(datatable)
 
+
 # run a pca
-data.pca <- prcomp(datatable[,c(5:11)], center = TRUE, scale. = TRUE) #5-11 columns
+data.pca <- prcomp(datatable[,c(5:11)], center = TRUE, scale. = TRUE, cor = TRUE, scores = TRUE) #5-11 columns
+
+data.pcaprincomp <- princomp(datatable[,c(5:11)], cor=TRUE, scores = TRUE)
+
 summary(data.pca)
+str(data.pca)
+summary(data.pcaprincomp)
 #PC1 explains 37% of the total variance
 #PC2 - 18.4 % of total varaince
 
@@ -132,34 +138,40 @@ data.pca
 # loading library
 library(ggfortify)
 
+#plots PC1,PC2 automatically
+pca_plot <- autoplot(data.pca,
+                          data = datatable,
+                          #  colour = 'Species'
+)
+pca_plot
 
 # screeplot - how many components to keep
-data.pca <- plot(data.pca, type="lines")
+data.pca <- plot(data.pca, type="lines") 
 
-# biplots! two different views
 
-biplot.data.pca <- biplot(data.pca)
-
-ggbiplot(data.pca)
+# biplot
+#pCA
+biplot.data <- biplot(data.pcaprincomp)
 
 
 ##
 # Add color! --> make at least one of these plots, substrate shows clearest grouping
+#need to use princomp pca
 #label with group year
-data.pca.year <- autoplot(data.pca,
+data.pca.year <- autoplot(data.pcaprincomp,
                           data = datatable,
                           colour = 'Year')
 #label with group size category
-data.pca.size <- autoplot(data.pca,
+data.pca.size <- autoplot(data.pcaprincomp,
                           data = datatable,
                           colour = 'catsize')
 #label with group present or absent category
-data.pca.presence <- autoplot(data.pca,
+data.pca.presence <- autoplot(data.pcaprincomp,
                           data = datatable,
                           colour = 'Presence')
 
 #label with group Substrate 
-data.pca.substrate <- autoplot(data.pca,
+data.pca.substrate <- autoplot(data.pcaprincomp,
                            data = datatable,
                            colour = 'Substrate')
 #see the plots
@@ -169,7 +181,7 @@ data.pca.presence
 data.pca.substrate
 
 ##################
-#### PCA - Principal component analysis  
+#### PCA - Principal component analysis with 3d
 ##################
 
 # if not already, install
@@ -180,13 +192,13 @@ install.packages("pca3d")
 library(pca3d)
 
 # create a 3d interactiable plot
-pca3d(data.pca)
+pca3d(data.pcaprincomp)
 
 #create group of substrate - or other group cat. variable
-pca3d(data.pca, components = 1:3, group=datatable$Substrate)
+pca3d(data.pcaprincomp, components = 1:3, group=datatable$Presence)
 
 #visualize with interactive plot
-snapshotPCA3d(file="first3pc_substrate.png")
+snapshotPCA3d(file="first3pc_presence.png")
 
 
 ####
